@@ -105,7 +105,11 @@ function buildMapData(chosenBranches: Record<string, string>): MapRow[] {
   return rows
 }
 
-export default function JourneyMap() {
+interface JourneyMapProps {
+  onShowBook?: () => void
+}
+
+export default function JourneyMap({ onShowBook }: JourneyMapProps) {
   const { chosenBranches, completedCards, resetAll } = useAppStore()
   const rows = buildMapData(chosenBranches)
   const completed = completedCards.length
@@ -235,6 +239,15 @@ export default function JourneyMap() {
         <p className="text-center text-[10px] text-surface-600 font-mono">
           {hash}
         </p>
+
+        {onShowBook && (
+          <button
+            onClick={onShowBook}
+            className="w-full py-3 rounded-xl bg-surface-800 text-surface-300 font-medium text-sm hover:bg-surface-700 transition-colors nav-btn border border-surface-700"
+          >
+            전체 87문장 보기
+          </button>
+        )}
 
         <button
           onClick={resetAll}

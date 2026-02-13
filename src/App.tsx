@@ -1,16 +1,29 @@
+import { useState } from 'react'
 import { useAppStore } from '@/stores/useAppStore'
 import ProgressBar from '@/components/ProgressBar'
 import SwipeContainer from '@/components/SwipeContainer'
 import JourneyMap from '@/components/JourneyMap'
+import SentenceBook from '@/components/SentenceBook'
+
+type View = 'main' | 'book'
 
 export default function App() {
   const { completedCards, resetAll, totalCards, totalProgress } = useAppStore()
+  const [view, setView] = useState<View>('main')
   const isJourneyComplete = totalCards() > 0 && totalProgress() === 100
+
+  if (view === 'book') {
+    return (
+      <div className="flex flex-col h-dvh bg-surface-950">
+        <SentenceBook onBack={() => setView('main')} />
+      </div>
+    )
+  }
 
   if (isJourneyComplete) {
     return (
       <div className="flex flex-col h-dvh bg-surface-950">
-        <JourneyMap />
+        <JourneyMap onShowBook={() => setView('book')} />
       </div>
     )
   }
@@ -23,6 +36,12 @@ export default function App() {
           🔗 English Chain
         </h1>
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => setView('book')}
+            className="text-[10px] text-chain-400 hover:text-chain-300 transition-colors"
+          >
+            All 87
+          </button>
           <span className="text-[10px] text-surface-500">이중회로 영어회화</span>
           {completedCards.length > 0 && (
             <button
