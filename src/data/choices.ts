@@ -1,0 +1,108 @@
+import type { ChoicePoint } from './types'
+
+export const CHOICE_POINTS: ChoicePoint[] = [
+  {
+    id: 'breakfast',
+    segment: 2,
+    timeBlock: 'morning',
+    time: '06:20',
+    question: '아침 어떻게 할까?',
+    questionEn: 'What about breakfast?',
+    options: [
+      { branch: 'eat', label: '아침 먹기', labelEn: 'Eat breakfast', emoji: '🍳', description: '토스트와 커피로 간단하게' },
+      { branch: 'skip', label: '건너뛰기', labelEn: 'Skip breakfast', emoji: '💨', description: '커피 한잔만 들고 출발' },
+    ],
+  },
+  {
+    id: 'transport',
+    segment: 4,
+    timeBlock: 'commute',
+    time: '07:15',
+    question: '어떻게 갈까?',
+    questionEn: 'How will you get there?',
+    options: [
+      { branch: 'bus', label: '버스', labelEn: 'Bus', emoji: '🚌', description: '정류장에서 기다리며' },
+      { branch: 'subway', label: '지하철', labelEn: 'Subway', emoji: '🚇', description: '빠르지만 붐비는' },
+      { branch: 'car', label: '자가용', labelEn: 'Drive', emoji: '🚗', description: '편하지만 주차가 문제' },
+    ],
+  },
+  {
+    id: 'destination',
+    segment: 6,
+    timeBlock: 'daytime',
+    time: '09:00',
+    question: '오늘 하루는 어디서?',
+    questionEn: 'Where are you headed today?',
+    options: [
+      { branch: 'office', label: '직장', labelEn: 'Office', emoji: '🏢', description: '회의, 이메일, 보고서' },
+      { branch: 'school', label: '학교', labelEn: 'School', emoji: '🎓', description: '강의, 도서관, 과제' },
+      { branch: 'freelance', label: '카페 작업', labelEn: 'Cafe work', emoji: '☕', description: '프리랜서의 하루' },
+    ],
+  },
+  {
+    id: 'lunch-type',
+    segment: 7,
+    timeBlock: 'lunch',
+    time: '12:00',
+    question: '점심 뭐 먹지?',
+    questionEn: 'What\'s for lunch?',
+    options: [
+      { branch: 'restaurant', label: '식당', labelEn: 'Restaurant', emoji: '🍜', description: '동료/친구와 같이' },
+      { branch: 'cafeteria', label: '구내식당', labelEn: 'Cafeteria', emoji: '🍱', description: '빠르고 저렴하게' },
+      { branch: 'delivery', label: '배달', labelEn: 'Delivery', emoji: '📦', description: '자리에서 편하게' },
+    ],
+  },
+  {
+    id: 'afternoon-task',
+    segment: 9,
+    timeBlock: 'afternoon',
+    time: '13:00',
+    question: '오후에 뭐 하지?',
+    questionEn: 'What\'s your afternoon like?',
+    options: [
+      { branch: 'meeting', label: '회의/수업', labelEn: 'Meeting', emoji: '🎤', description: '발표하고 토론하고' },
+      { branch: 'project', label: '프로젝트', labelEn: 'Project work', emoji: '💻', description: '집중해서 마감 맞추기' },
+      { branch: 'outside', label: '외근/현장', labelEn: 'Field work', emoji: '🚶', description: '밖에서 일하는 오후' },
+    ],
+  },
+  {
+    id: 'way-home',
+    segment: 11,
+    timeBlock: 'commute-pm',
+    time: '18:15',
+    question: '집에 가면서?',
+    questionEn: 'On the way home?',
+    options: [
+      { branch: 'grocery', label: '마트', labelEn: 'Grocery', emoji: '🛒', description: '장 좀 봐야지' },
+      { branch: 'straight', label: '바로 귀가', labelEn: 'Straight home', emoji: '🏠', description: '오늘은 그냥 집으로' },
+      { branch: 'gym', label: '헬스장', labelEn: 'Gym', emoji: '🏋️', description: '운동하고 귀가' },
+    ],
+  },
+  {
+    id: 'dinner',
+    segment: 13,
+    timeBlock: 'evening',
+    time: '19:30',
+    question: '저녁은?',
+    questionEn: 'What about dinner?',
+    options: [
+      { branch: 'cook', label: '직접 요리', labelEn: 'Cook', emoji: '🍳', description: '냉장고 재료로 뚝딱' },
+      { branch: 'order', label: '배달', labelEn: 'Delivery', emoji: '📱', description: '오늘은 요리하기 귀찮아' },
+      { branch: 'dine-out', label: '외식', labelEn: 'Eat out', emoji: '🍽️', description: '맛집 가자' },
+    ],
+  },
+  {
+    id: 'leisure',
+    segment: 15,
+    timeBlock: 'evening',
+    time: '20:40',
+    question: '뭐 하며 쉴까?',
+    questionEn: 'How will you relax?',
+    options: [
+      { branch: 'netflix', label: '넷플릭스', labelEn: 'Netflix', emoji: '📺', description: '한 편만 더...' },
+      { branch: 'exercise', label: '스트레칭', labelEn: 'Stretch', emoji: '🧘', description: '몸 좀 풀자' },
+      { branch: 'reading', label: '독서', labelEn: 'Reading', emoji: '📖', description: '자기 전 10페이지' },
+      { branch: 'gaming', label: '게임', labelEn: 'Gaming', emoji: '🎮', description: '한 판만...' },
+    ],
+  },
+]

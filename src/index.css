@@ -1,0 +1,114 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Pretendard Variable", "Pretendard", system-ui, sans-serif;
+
+  --color-chain-50: #eff6ff;
+  --color-chain-100: #dbeafe;
+  --color-chain-200: #bfdbfe;
+  --color-chain-300: #93c5fd;
+  --color-chain-400: #60a5fa;
+  --color-chain-500: #3b82f6;
+  --color-chain-600: #2563eb;
+  --color-chain-700: #1d4ed8;
+
+  --color-morning: #f59e0b;
+  --color-work: #3b82f6;
+  --color-lunch: #10b981;
+  --color-afternoon: #6366f1;
+  --color-evening: #f97316;
+  --color-night: #8b5cf6;
+
+  --color-stage-1: #f59e0b;
+  --color-stage-2: #3b82f6;
+  --color-stage-3: #10b981;
+  --color-stage-4: #ef4444;
+
+  --color-surface-50: #f8fafc;
+  --color-surface-100: #f1f5f9;
+  --color-surface-200: #e2e8f0;
+  --color-surface-300: #cbd5e1;
+  --color-surface-400: #94a3b8;
+  --color-surface-500: #64748b;
+  --color-surface-600: #475569;
+  --color-surface-700: #334155;
+  --color-surface-800: #1e293b;
+  --color-surface-900: #0f172a;
+  --color-surface-950: #020617;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+}
+
+html {
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body {
+  margin: 0;
+  background: var(--color-surface-950);
+  color: var(--color-surface-100);
+  font-family: var(--font-sans);
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: pan-y;
+  min-height: 100dvh;
+}
+
+#root {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Hide scrollbar for pills row */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+.card-shadow {
+  box-shadow:
+    0 4px 24px rgba(0, 0, 0, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.04);
+}
+
+/* Completion confetti shimmer */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.shimmer-bg {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(59, 130, 246, 0.08) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 2s ease-in-out infinite;
+}
+
+/* Stage reveal pulse */
+@keyframes reveal-pulse {
+  0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+  70% { box-shadow: 0 0 0 8px rgba(59, 130, 246, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+}
+.reveal-pulse {
+  animation: reveal-pulse 0.6s ease-out;
+}
+
+/* Nav button hover */
+.nav-btn {
+  transition: all 0.15s ease;
+}
+.nav-btn:active {
+  transform: scale(0.92);
+}
