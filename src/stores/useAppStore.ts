@@ -146,7 +146,14 @@ export const useAppStore = create<AppState>()(
       totalProgress: () => {
         const total = get().totalCards()
         if (total === 0) return 0
-        return Math.round((get().completedCards.length / total) * 100)
+        const chosen = get().chosenBranches
+        const pathCardIds = cards.filter((c) => {
+          if (c.branch === 'common') return true
+          const cp = CHOICE_POINTS.find((p) => p.segment === c.segment)
+          return cp && chosen[cp.id] === c.branch
+        }).map((c) => c.id)
+        const done = get().completedCards.filter((id) => pathCardIds.includes(id)).length
+        return Math.round((done / total) * 100)
       },
     }),
     {
