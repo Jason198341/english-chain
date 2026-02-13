@@ -42,6 +42,22 @@ interface MapRow {
   options?: { branch: string; label: string; emoji: string; chosen: boolean }[]
 }
 
+/** Calculate journey number (1-5832) from chosen branches */
+function journeyNumber(chosenBranches: Record<string, string>): number {
+  let index = 0
+  let multiplier = 1
+
+  // Process choice points in reverse order (last choice = least significant)
+  for (let i = CHOICE_POINTS.length - 1; i >= 0; i--) {
+    const cp = CHOICE_POINTS[i]
+    const branchIdx = cp.options.findIndex((o) => o.branch === chosenBranches[cp.id])
+    index += (branchIdx >= 0 ? branchIdx : 0) * multiplier
+    multiplier *= cp.options.length
+  }
+
+  return index + 1 // 1-based
+}
+
 function buildMapData(chosenBranches: Record<string, string>): MapRow[] {
   const rows: MapRow[] = []
 
@@ -101,6 +117,7 @@ export default function JourneyMap() {
   // Generate a "journey signature" — unique color based on choices
   const choiceValues = Object.values(chosenBranches)
   const hash = choiceValues.join('-')
+  const jNum = journeyNumber(chosenBranches)
 
   return (
     <div className="flex flex-col h-full overflow-y-auto bg-surface-950">
@@ -109,6 +126,9 @@ export default function JourneyMap() {
         <p className="text-[10px] uppercase tracking-[0.3em] text-chain-400 mb-1">Journey Complete</p>
         <h2 className="text-2xl font-bold text-white mb-1">오늘의 여정</h2>
         <p className="text-surface-400 text-sm font-mono">{dateStr} ({dayStr})</p>
+        <p className="mt-1 text-[11px] font-mono text-chain-500">
+          Journey #{jNum.toLocaleString()} of 5,832
+        </p>
         <div className="mt-3 flex items-center justify-center gap-4">
           <div className="text-center">
             <p className="text-xl font-bold text-chain-300">{completed}</p>
