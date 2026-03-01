@@ -15,10 +15,28 @@ const BLOCK_COLORS: Record<string, string> = {
 }
 
 export default function ProgressBar() {
-  const { completedCards, activeTimeBlock, setTimeBlock, totalProgress, totalCards } = useAppStore()
+  const { completedCards, activeTimeBlock, setTimeBlock, totalProgress, totalCards, xp, level } = useAppStore()
+  const xpInLevel = xp - (level - 1) * 100
+  const xpForNext = 100
 
   return (
     <div className="px-4 pt-1 pb-2">
+      {/* Level + XP row */}
+      <div className="flex items-center gap-2 mb-1.5">
+        <span className="shrink-0 text-[10px] font-bold px-1.5 py-0.5 rounded bg-chain-600/20 text-chain-300">
+          Lv.{level}
+        </span>
+        <div className="flex-1 h-1.5 rounded-full bg-surface-800 overflow-hidden">
+          <div
+            className="h-full rounded-full bg-chain-500 transition-all duration-500"
+            style={{ width: `${Math.min(100, (xpInLevel / xpForNext) * 100)}%` }}
+          />
+        </div>
+        <span className="shrink-0 text-[10px] text-surface-500 tabular-nums">
+          {xpInLevel}/{xpForNext}
+        </span>
+      </div>
+
       {/* Overall progress row */}
       <div className="flex items-center justify-between mb-1.5">
         <span className="text-[10px] text-surface-400 tabular-nums">

@@ -10,7 +10,7 @@ interface Props {
 }
 
 export default function CardView({ card }: Props) {
-  const { stageProgress, advanceStage, resetCard, goNext, buildPath } = useAppStore()
+  const { stageProgress, advanceStage, resetCard, goNext, buildPath, addXp } = useAppStore()
   const currentStage = (stageProgress[card.id] ?? 1) as number
   const isComplete = currentStage >= 5
   const timeBlock = TIME_BLOCKS.find((tb) => tb.id === card.timeBlock)
@@ -95,7 +95,12 @@ export default function CardView({ card }: Props) {
               card={card}
               stageId={stageId}
               status={status}
-              onComplete={() => advanceStage(card.id)}
+              onComplete={() => {
+                const prevStage = stageProgress[card.id] ?? 1
+                advanceStage(card.id)
+                // Card completion bonus (stage 4 → 5)
+                if (prevStage === 4) addXp(25)
+              }}
             />
           )
         })}

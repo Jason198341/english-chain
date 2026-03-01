@@ -1,8 +1,9 @@
+import { useRef } from 'react'
 import { useAppStore } from '@/stores/useAppStore'
 import { CHOICE_POINTS } from '@/data/choices'
 import { cards } from '@/data/cards'
-import { TIME_BLOCKS } from '@/data/types'
 import type { TimeBlock } from '@/data/types'
+import ShareButton from './ShareButton'
 
 /** Color gradient from morning → night */
 const TB_COLORS: Record<TimeBlock, string> = {
@@ -110,7 +111,8 @@ interface JourneyMapProps {
 }
 
 export default function JourneyMap({ onShowBook }: JourneyMapProps) {
-  const { chosenBranches, completedCards, resetAll } = useAppStore()
+  const { chosenBranches, completedCards, resetAll, streak, xp, level } = useAppStore()
+  const mapRef = useRef<HTMLDivElement>(null)
   const rows = buildMapData(chosenBranches)
   const completed = completedCards.length
   const today = new Date()
@@ -124,7 +126,7 @@ export default function JourneyMap({ onShowBook }: JourneyMapProps) {
   const jNum = journeyNumber(chosenBranches)
 
   return (
-    <div className="flex flex-col h-full overflow-y-auto bg-surface-950">
+    <div ref={mapRef} className="flex flex-col h-full overflow-y-auto bg-surface-950">
       {/* Header */}
       <div className="text-center pt-6 pb-4 px-4">
         <p className="text-[10px] uppercase tracking-[0.3em] text-chain-400 mb-1">Journey Complete</p>
@@ -133,7 +135,7 @@ export default function JourneyMap({ onShowBook }: JourneyMapProps) {
         <p className="mt-1 text-[11px] font-mono text-chain-500">
           Journey #{jNum.toLocaleString()} of 5,832
         </p>
-        <div className="mt-3 flex items-center justify-center gap-4">
+        <div className="mt-3 flex items-center justify-center gap-3">
           <div className="text-center">
             <p className="text-xl font-bold text-chain-300">{completed}</p>
             <p className="text-[10px] text-surface-500">카드</p>
@@ -145,10 +147,13 @@ export default function JourneyMap({ onShowBook }: JourneyMapProps) {
           </div>
           <div className="w-px h-8 bg-surface-700" />
           <div className="text-center">
-            <p className="text-xl font-bold text-chain-300">
-              {TIME_BLOCKS.length}
-            </p>
-            <p className="text-[10px] text-surface-500">시간대</p>
+            <p className="text-xl font-bold text-orange-400">🔥 {streak}</p>
+            <p className="text-[10px] text-surface-500">연속</p>
+          </div>
+          <div className="w-px h-8 bg-surface-700" />
+          <div className="text-center">
+            <p className="text-xl font-bold text-chain-300">Lv.{level}</p>
+            <p className="text-[10px] text-surface-500">{xp} XP</p>
           </div>
         </div>
       </div>
@@ -239,6 +244,8 @@ export default function JourneyMap({ onShowBook }: JourneyMapProps) {
         <p className="text-center text-[10px] text-surface-600 font-mono">
           {hash}
         </p>
+
+        <ShareButton targetRef={mapRef} journeyNumber={jNum} />
 
         {onShowBook && (
           <button

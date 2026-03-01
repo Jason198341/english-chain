@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware'
 import type { TimeBlock, PathItem } from '@/data/types'
 import { cards } from '@/data/cards'
 import { CHOICE_POINTS } from '@/data/choices'
+import { checkStreak } from '@/lib/streak'
 
 interface AppState {
   // Navigation
@@ -15,6 +16,25 @@ interface AppState {
   // Progress
   stageProgress: Record<number, number>   // cardId -> current stage (1-4, 5=done)
   completedCards: number[]
+
+  // XP & Levels
+  xp: number
+  level: number
+  pendingXp: number | null  // for toast display
+  addXp: (amount: number) => void
+  clearPendingXp: () => void
+
+  // Streak
+  streak: number
+  lastActiveDate: string | null
+  bestStreak: number
+  updateStreak: () => void
+
+  // Settings
+  autoPlayTts: boolean
+  setAutoPlayTts: (v: boolean) => void
+  hasOnboarded: boolean
+  setOnboarded: () => void
 
   // Actions
   setCurrentIndex: (i: number) => void
@@ -41,6 +61,43 @@ export const useAppStore = create<AppState>()(
       stageProgress: {},
       completedCards: [],
 
+      // XP & Levels
+      xp: 0,
+      level: 1,
+      pendingXp: null,
+
+      addXp: (amount) => {
+        const prev = get().xp
+        const next = prev + amount
+        const newLevel = Math.min(10, Math.floor(next / 100) + 1)
+        set({ xp: next, level: newLevel, pendingXp: amount })
+      },
+
+      clearPendingXp: () => set({ pendingXp: null }),
+
+      // Streak
+      streak: 0,
+      lastActiveDate: null,
+      bestStreak: 0,
+
+      updateStreak: () => {
+        const { lastActiveDate, streak, bestStreak } = get()
+        const result = checkStreak(lastActiveDate)
+        const newStreak = result.reset ? 1 : streak + (result.increment ? 1 : 0)
+        const today = new Date().toISOString().slice(0, 10)
+        set({
+          streak: newStreak,
+          lastActiveDate: today,
+          bestStreak: Math.max(bestStreak, newStreak),
+        })
+      },
+
+      // Settings
+      autoPlayTts: false,
+      setAutoPlayTts: (v) => set({ autoPlayTts: v }),
+      hasOnboarded: false,
+      setOnboarded: () => set({ hasOnboarded: true }),
+
       setCurrentIndex: (i) => set({ currentIndex: i }),
 
       goNext: () => {
@@ -59,7 +116,7 @@ export const useAppStore = create<AppState>()(
       chooseBranch: (choiceId, branch) => {
         const newChoices = { ...get().chosenBranches, [choiceId]: branch }
         set({ chosenBranches: newChoices })
-        // Don't advance index — the choice item will be replaced by cards
+        get().addXp(5) // choice made = +5 XP
       },
 
       advanceStage: (cardId) => {
@@ -164,6 +221,13 @@ export const useAppStore = create<AppState>()(
         currentIndex: state.currentIndex,
         activeTimeBlock: state.activeTimeBlock,
         chosenBranches: state.chosenBranches,
+        xp: state.xp,
+        level: state.level,
+        streak: state.streak,
+        lastActiveDate: state.lastActiveDate,
+        bestStreak: state.bestStreak,
+        autoPlayTts: state.autoPlayTts,
+        hasOnboarded: state.hasOnboarded,
       }),
     },
   ),

@@ -2,6 +2,9 @@ import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import type { Card, StageId } from '@/data/types'
 import { STAGE_NAMES } from '@/data/types'
+import { useAppStore } from '@/stores/useAppStore'
+import { speak } from '@/lib/speech'
+import MicButton from './MicButton'
 
 interface Props {
   card: Card
@@ -12,7 +15,14 @@ interface Props {
 
 export default function StageStep({ card, stageId, status, onComplete }: Props) {
   const [revealed, setRevealed] = useState(false)
+  const { addXp } = useAppStore()
+  const [accuracy, setAccuracy] = useState<number | null>(null)
   const meta = STAGE_NAMES[stageId]
+
+  const handleComplete = () => {
+    addXp(10)
+    onComplete()
+  }
 
   const handleReveal = () => {
     if (!revealed) setRevealed(true)
@@ -50,7 +60,7 @@ export default function StageStep({ card, stageId, status, onComplete }: Props) 
               <motion.button
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                onClick={onComplete}
+                onClick={handleComplete}
                 className="w-full py-2.5 rounded-lg bg-stage-1 text-white font-semibold text-sm nav-btn"
               >
                 다음 단계 →
@@ -74,6 +84,13 @@ export default function StageStep({ card, stageId, status, onComplete }: Props) 
               </p>
             </div>
             <div className="flex items-center gap-2 text-surface-400">
+              <button
+                onClick={() => speak(card.english)}
+                className="w-8 h-8 rounded-full bg-stage-2/20 text-stage-2 flex items-center justify-center hover:bg-stage-2/30 transition-colors nav-btn"
+                aria-label="Listen"
+              >
+                🔊
+              </button>
               <div className="flex gap-1">
                 {[1, 2, 3].map((n) => (
                   <div key={n} className="w-5 h-5 rounded-full border border-surface-600 flex items-center justify-center text-[10px]">
@@ -84,7 +101,7 @@ export default function StageStep({ card, stageId, status, onComplete }: Props) 
               <span className="text-xs italic">3번 읽은 후 넘기세요</span>
             </div>
             <button
-              onClick={onComplete}
+              onClick={handleComplete}
               className="w-full py-2.5 rounded-lg bg-stage-2 text-white font-semibold text-sm nav-btn"
             >
               다음 단계 →
@@ -107,7 +124,7 @@ export default function StageStep({ card, stageId, status, onComplete }: Props) 
               <p className="text-chain-200 font-medium text-sm">{card.english}</p>
             </div>
             <button
-              onClick={onComplete}
+              onClick={handleComplete}
               className="w-full py-2.5 rounded-lg bg-stage-3 text-white font-semibold text-sm nav-btn"
             >
               다음 단계 →
@@ -123,6 +140,22 @@ export default function StageStep({ card, stageId, status, onComplete }: Props) 
             </p>
             <div className="bg-surface-900 rounded-lg p-3 border border-stage-4/20">
               <p className="text-surface-100 font-medium text-sm">{card.stages.speak.expandPrompt}</p>
+            </div>
+            {/* Mic + accuracy */}
+            <div className="flex items-center gap-3">
+              <MicButton
+                expectedText={card.english}
+                onResult={(acc) => setAccuracy(acc)}
+              />
+              {accuracy !== null && (
+                <span className={`text-xs font-bold px-2 py-1 rounded-full ${
+                  accuracy >= 80 ? 'bg-green-500/20 text-green-300' :
+                  accuracy >= 60 ? 'bg-amber-500/20 text-amber-300' :
+                  'bg-red-500/20 text-red-300'
+                }`}>
+                  {accuracy}% match
+                </span>
+              )}
             </div>
             <div
               className={`rounded-lg p-3 cursor-pointer transition-all border ${
@@ -144,7 +177,7 @@ export default function StageStep({ card, stageId, status, onComplete }: Props) 
               )}
             </div>
             <button
-              onClick={onComplete}
+              onClick={handleComplete}
               className="w-full py-2.5 rounded-lg bg-stage-4 text-white font-semibold text-sm nav-btn"
             >
               완료 ✓

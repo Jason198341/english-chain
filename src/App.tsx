@@ -1,16 +1,28 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useAppStore } from '@/stores/useAppStore'
 import ProgressBar from '@/components/ProgressBar'
 import SwipeContainer from '@/components/SwipeContainer'
 import JourneyMap from '@/components/JourneyMap'
 import SentenceBook from '@/components/SentenceBook'
+import XpToast from '@/components/XpToast'
+import Onboarding from '@/components/Onboarding'
 
 type View = 'main' | 'book'
 
 export default function App() {
-  const { completedCards, resetAll, totalCards, totalProgress } = useAppStore()
+  const { completedCards, resetAll, totalCards, totalProgress, streak, updateStreak, hasOnboarded } = useAppStore()
   const [view, setView] = useState<View>('main')
   const isJourneyComplete = totalCards() > 0 && totalProgress() === 100
+
+  // Update streak on mount
+  useEffect(() => {
+    updateStreak()
+  }, [updateStreak])
+
+  // Onboarding gate
+  if (!hasOnboarded) {
+    return <Onboarding />
+  }
 
   if (view === 'book') {
     return (
@@ -24,6 +36,7 @@ export default function App() {
     return (
       <div className="flex flex-col h-dvh bg-surface-950">
         <JourneyMap onShowBook={() => setView('book')} />
+        <XpToast />
       </div>
     )
   }
@@ -36,6 +49,11 @@ export default function App() {
           🔗 English Chain
         </h1>
         <div className="flex items-center gap-3">
+          {streak > 0 && (
+            <span className="text-[11px] font-bold text-orange-400">
+              🔥 {streak}
+            </span>
+          )}
           <button
             onClick={() => setView('book')}
             className="text-[10px] text-chain-400 hover:text-chain-300 transition-colors"
@@ -61,6 +79,7 @@ export default function App() {
 
       {/* Card area */}
       <SwipeContainer />
+      <XpToast />
     </div>
   )
 }
